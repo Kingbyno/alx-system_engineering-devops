@@ -4,19 +4,20 @@ import requests
 
 
 def top_ten(subreddit):
-    """Print the titles of the 10 hottest posts on a given subreddit."""
-    url = "https://www.reddit.com/r/{}/hot/.json".format(subreddit)
-    headers = {
-        "User-Agent": "linux:0x16.api.advanced:v1.0.0 (by /u/bdov_)"
-    }
-    params = {
-        "limit": 10
-    }
-    response = requests.get(url, headers=headers, params=params,
-                            allow_redirects=False)
-    if response.status_code == 404:
+    base_url = "https://www.reddit.com/r/"
+    headers = {"User-Agent": "CustomUserAgent"}  # Set a custom User-Agent to avoid Too Many Requests error
+    
+    url = f"{base_url}{subreddit}/hot.json"
+    
+    response = requests.get(url, headers=headers, allow_redirects=False)
+    
+    if response.status_code == 200:
+        data = response.json()
+        posts = data["data"]["children"]
+        
+        for i, post in enumerate(posts[:10], start=1):
+            title = post["data"]["title"]
+            print(f"{i}. {title}")
+    else:
         print("None")
-        return
-    results = response.json().get("data")
-    [print(c.get("data").get("title")) for c in results.get("children")]
 
