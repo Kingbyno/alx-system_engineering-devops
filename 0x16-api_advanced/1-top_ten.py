@@ -4,20 +4,26 @@ import requests
 
 
 def top_ten(subreddit):
-    base_url = "https://www.reddit.com/r/"
-    headers = {"User-Agent": "CustomUserAgent"}  # Set a custom User-Agent to avoid Too Many Requests error
-    
-    url = f"{base_url}{subreddit}/hot.json"
-    
-    response = requests.get(url, headers=headers, allow_redirects=False)
-    
-    if response.status_code == 200:
-        data = response.json()
-        posts = data["data"]["children"]
-        
-        for i, post in enumerate(posts[:10], start=1):
-            title = post["data"]["title"]
-            print(f"{i}. {title}")
-    else:
+    """
+    function that queries the Reddit API and prints the titles of the first
+    10 hot posts listed for a given subreddit
+    """
+
+    if subreddit is None or not isinstance(subreddit, str):
         print("None")
 
+    user_agent = {'User-agent': 'Google Chrome Version 81.0.4044.129'}
+    params = {'limit': 10}
+    url = 'https://www.reddit.com/r/{}/hot/.json'.format(subreddit)
+
+    response = get(url, headers=user_agent, params=params)
+    results = response.json()
+
+    try:
+        my_data = results.get('data').get('children')
+
+        for i in my_data:
+            print(i.get('data').get('title'))
+
+    except Exception:
+        print("None")
