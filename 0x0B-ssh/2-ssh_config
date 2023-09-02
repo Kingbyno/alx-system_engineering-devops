@@ -1,6 +1,8 @@
-# ssh_config
+# SSH configuration
+#!/usr/bin/env bash
 
 Host *
+    PubkeyAuthentication yes
     PasswordAuthentication no
     IdentityFile ~/.ssh/school
     SendEnv LANG LC_*
